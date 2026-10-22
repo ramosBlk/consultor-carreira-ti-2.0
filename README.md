@@ -6,6 +6,14 @@ O sistema realiza uma entrevista com o usuário através de perguntas sobre afin
 
 ---
 
+# 🖥️ Tela de Resultado Esperado 
+
+![Tela do projeto](assets/Tela.png)
+
+![Tela do projeto](assets/Tela2.png)
+
+
+---
 # 🎯 Objetivo
 
 Desenvolver um Sistema Especialista capaz de identificar a trilha de carreira em TI mais compatível com o perfil do usuário utilizando:
