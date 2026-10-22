@@ -49,13 +49,17 @@ consultor-carreiras-ti/
 │
 ├── engine/                     # Núcleo do sistema especialista
 │   │
-│   ├── careers.py              # Definição das trilhas de carreira
+│   ├── __init__.py             # Compatibilidade das dependências do motor
 │   ├── facts.py                # Definição dos fatos do usuário
 │   ├── inference.py            # Motor de inferência utilizando Experta
-│   ├── questions.py             # Perguntas da entrevista
+│   ├── questions.py            # Perguntas da entrevista
 │   └── rules.py                # Regras especialistas do sistema
 │
-└── models/                     # Estruturas auxiliares do projeto
+├── models/
+│   └── careers.py              # Definição das trilhas de carreira
+│
+└── tests/
+    └── test_rules.py           # Testes das recomendações e perguntas
 ```
 
 ---
@@ -290,6 +294,17 @@ Cada regra possui uma justificativa associada, permitindo transparência na deci
 ---
 
 # 🧪 Validação com Personas
+
+Para executar os testes automatizados com as dependências instaladas:
+
+```bash
+python -m unittest discover -s tests
+```
+
+Os testes cobrem perfis representativos das dez trilhas, um perfil sem
+recomendação e a consistência das opções da entrevista.
+
+---
 
 O sistema será validado utilizando diferentes perfis de usuários.
 
