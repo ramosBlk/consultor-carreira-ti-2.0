@@ -6,6 +6,11 @@ QUESTIONS = {
         "Alta"
     ],
 
+    "programacao_logica": [
+        "Sim",
+        "Não"
+    ],
+
     "atividade": [
         "Criar APIs",
         "Criar Interfaces",
@@ -25,11 +30,50 @@ QUESTIONS = {
         "Nenhuma"
     ],
 
+    "banco_dados": [
+        "Sim",
+        "Não"
+    ],
+
+    "automacao": [
+        "Sim",
+        "Não"
+    ],
+
+    "inteligencia_artificial": [
+        "Sim",
+        "Não"
+    ],
+
+    "redes": [
+        "Sim",
+        "Não"
+    ],
+
+    "cloud": [
+        "Sim",
+        "Não"
+    ],
+
+    "testes": [
+        "Sim",
+        "Não"
+    ],
+
+    "mobile": [
+        "Sim",
+        "Não"
+    ],
+
+    "negocios": [
+        "Sim",
+        "Não"
+    ],
+
     "entrega": [
         "Produto Final",
         "Infraestrutura",
         "Dados",
         "Segurança"
     ]
-
 }
