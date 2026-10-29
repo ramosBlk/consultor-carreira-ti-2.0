@@ -90,3 +90,19 @@ Os testes cobrem o ranking ponderado, perfis ambíguos, casos-limite e a geraç�
 ## Base de conhecimento
 
 As perguntas, os pesos, as penalidades, as habilidades de nível Júnior e as recomendações ficam em [`regras_carreiras.json`](./regras_carreiras.json). Assim, é possível ajustar o conteúdo das trilhas sem misturar essas definições ao código do motor. A lógica de pontuação fica em `engine/engine.py`, e a análise de lacunas e o plano de estudos em `engine/roadmap.py`.
+
+# Autor
+
+**Pedro Henrique Ramos de Carvalho**
+
+Projeto acadêmico desenvolvido para a disciplina de Inteligência Artificial.
+
+**Centro Universitário Presidente Antônio Carlos - UNIPAC Barbacena**
+
+# Uso de Inteligência Artificial como Apoio no Desenvolvimento
+
+Durante o desenvolvimento deste projeto, foi utilizada a ferramenta **Copilot** como recurso de apoio para auxiliar na organização das ideias, estruturação do projeto.
+
+A utilização da inteligência artificial teve como objetivo auxiliar o processo de aprendizagem e desenvolvimento, enquanto todas as decisões de implementação, organização do código, criação das regras do sistema especialista e validação do funcionamento foram realizadas durante a construção do projeto.
+
+A ferramenta foi utilizada como um suporte semelhante a uma consulta técnica, contribuindo para a evolução do projeto e para o entendimento das tecnologias utilizadas.
