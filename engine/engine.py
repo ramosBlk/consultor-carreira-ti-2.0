@@ -35,8 +35,9 @@ def rank_careers(
     answers: Mapping[str, int],
     top_n: int | None = 3,
     knowledge_base: Mapping[str, Any] | None = None,
+    objectives: Mapping[str, str] | None = None,
 ) -> list[CareerCompatibility]:
-    """Rank careers by weighted Likert affinity, applying configured penalties."""
+    """Rank careers by weighted affinity and work preference, with configured penalties."""
     base = knowledge_base if knowledge_base is not None else load_knowledge_base()
     _validate_knowledge_base(base)
 
@@ -44,6 +45,28 @@ def rank_careers(
         raise TypeError("As respostas devem ser fornecidas como um mapeamento.")
     if not answers:
         raise ValueError("Informe ao menos uma resposta para calcular a compatibilidade.")
+    if objectives is None:
+        objectives = {}
+    if not isinstance(objectives, Mapping):
+        raise TypeError("Os objetivos devem ser fornecidos como um mapeamento.")
+    unknown_objectives = set(objectives) - {"work_preference"}
+    if unknown_objectives:
+        raise ValueError(
+            "Objetivos desconhecidos: " + ", ".join(sorted(unknown_objectives))
+        )
+    work_preference = objectives.get("work_preference")
+    if work_preference is not None:
+        if not isinstance(work_preference, str):
+            raise TypeError("A preferência de trabalho deve ser um texto.")
+        valid_preferences = {
+            option
+            for step in base.get("wizard_steps", [])
+            for field in step.get("fields", [])
+            if field.get("id") == "work_preference"
+            for option in field.get("options", [])
+        }
+        if work_preference not in valid_preferences:
+            raise ValueError("A preferência de trabalho não é uma opção válida.")
     if top_n is not None and (
         isinstance(top_n, bool) or not isinstance(top_n, int) or top_n < 1
     ):
@@ -87,6 +110,16 @@ def rank_careers(
             ) / total_weight
         else:
             weighted_score = 0.0
+
+        preference_score = career.get("work_preference_scores", {}).get(
+            work_preference
+        )
+        if preference_score is not None:
+            objective_weight = base.get("objective_fit_weight", 0.0)
+            weighted_score = (
+                weighted_score * (1 - objective_weight)
+                + preference_score * objective_weight
+            )
 
         penalty_reasons = []
         for penalty in base.get("fit_penalties", []):
@@ -176,7 +209,98 @@ def _validate_knowledge_base(knowledge_base: Mapping[str, Any]) -> None:
         ):
             raise ValueError(f"Os pesos da trilha '{career.get('id')}' são inválidos.")
 
+        skills = career.get("junior_skills", [])
+        skill_ids = {skill.get("id") for skill in skills}
+        roadmap = career.get("roadmap", {})
+        technology_map = roadmap.get("technology_by_skill", {})
+        certification_map = roadmap.get("certification_by_skill", {})
+        if not isinstance(technology_map, Mapping):
+            raise ValueError(
+                f"O mapa de tecnologias da trilha '{career.get('id')}' é inválido."
+            )
+        if not isinstance(certification_map, Mapping):
+            raise ValueError(
+                f"O mapa de certificações da trilha '{career.get('id')}' é inválido."
+            )
+        if not set(technology_map).issubset(skill_ids):
+            raise ValueError(
+                f"O mapa de tecnologias da trilha '{career.get('id')}' "
+                "referencia uma habilidade inexistente."
+            )
+        if not set(certification_map).issubset(skill_ids) or any(
+            not isinstance(certification, str) or not certification.strip()
+            for certification in certification_map.values()
+        ):
+            raise ValueError(
+                f"O mapa de certificações da trilha '{career.get('id')}' é inválido."
+            )
+        technologies = roadmap.get("technologies", [])
+        if any(
+            not isinstance(items, list)
+            or any(item not in technologies for item in items)
+            for items in technology_map.values()
+        ):
+            raise ValueError(
+                f"O mapa de tecnologias da trilha '{career.get('id')}' "
+                "referencia uma tecnologia inexistente."
+            )
+
     career_id_set = set(career_ids)
+    objective_weight = knowledge_base.get("objective_fit_weight", 0.0)
+    if (
+        isinstance(objective_weight, bool)
+        or not isinstance(objective_weight, (int, float))
+        or not 0 <= objective_weight <= 1
+    ):
+        raise ValueError("O peso dos objetivos deve estar entre 0 e 1.")
+
+    valid_preferences = {
+        option
+        for step in knowledge_base.get("wizard_steps", [])
+        for field in step.get("fields", [])
+        if field.get("id") == "work_preference"
+        for option in field.get("options", [])
+    }
+    valid_timelines = {
+        option
+        for step in knowledge_base.get("wizard_steps", [])
+        for field in step.get("fields", [])
+        if field.get("id") == "career_timeline"
+        for option in field.get("options", [])
+    }
+    timeline_guidance = knowledge_base.get("timeline_guidance", {})
+    if not isinstance(timeline_guidance, Mapping):
+        raise ValueError("As orientações de prazo são inválidas.")
+    if not set(timeline_guidance).issubset(valid_timelines) or any(
+        not isinstance(guidance, str) or not guidance.strip()
+        for guidance in timeline_guidance.values()
+    ):
+        raise ValueError("Uma orientação referencia um prazo inválido.")
+    portfolio_gap_template = knowledge_base.get("portfolio_gap_template")
+    if portfolio_gap_template is not None and (
+        not isinstance(portfolio_gap_template, str)
+        or "{skills}" not in portfolio_gap_template
+    ):
+        raise ValueError("O modelo de projeto para lacunas é inválido.")
+
+    for career in careers:
+        preference_scores = career.get("work_preference_scores", {})
+        if not isinstance(preference_scores, Mapping):
+            raise ValueError(
+                f"As pontuações de preferência da trilha '{career.get('id')}' são inválidas."
+            )
+        if not set(preference_scores).issubset(valid_preferences):
+            raise ValueError("Uma pontuação referencia uma preferência inexistente.")
+        if any(
+            isinstance(score, bool)
+            or not isinstance(score, (int, float))
+            or not 0 <= score <= 1
+            for score in preference_scores.values()
+        ):
+            raise ValueError(
+                f"As pontuações de preferência da trilha '{career.get('id')}' são inválidas."
+            )
+
     for penalty in knowledge_base.get("fit_penalties", []):
         for condition in penalty.get("when", []):
             if condition.get("question_id") not in question_id_set:

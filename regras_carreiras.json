@@ -1,5 +1,13 @@
 {
   "schema_version": "2.0",
+  "objective_fit_weight": 0.2,
+  "timeline_guidance": {
+    "Até 6 meses": "Ritmo intensivo: priorize uma lacuna por vez e pratique cada tópico em um projeto pequeno.",
+    "De 6 a 12 meses": "Ritmo progressivo: alterne fundamentos, prática e revisão das lacunas ao longo dos estudos.",
+    "Mais de 12 meses": "Ritmo aprofundado: consolide os fundamentos e amplie os projetos gradualmente.",
+    "Ainda sem prazo": "Ritmo exploratório: avance pelas lacunas prioritárias e reavalie o plano conforme ganhar experiência."
+  },
+  "portfolio_gap_template": "Ajuste o projeto da trilha para demonstrar na prática: {skills}.",
   "likert_scale": {
     "minimum": 1,
     "maximum": 5,
@@ -78,12 +86,12 @@
           "label": "Qual tipo de trabalho mais combina com seu objetivo atual?",
           "type": "choice",
           "options": [
+            "Ainda estou explorando",
             "Construir produtos e funcionalidades",
             "Analisar dados e gerar descobertas",
             "Manter sistemas e infraestrutura confiáveis",
             "Proteger sistemas e investigar incidentes",
-            "Coordenar pessoas e decisões de produto",
-            "Ainda estou explorando"
+            "Coordenar pessoas e decisões de produto"
           ]
         },
         {
@@ -130,6 +138,13 @@
     {
       "id": "backend",
       "name": "Desenvolvimento Back-end",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 1.0,
+        "Analisar dados e gerar descobertas": 0.15,
+        "Manter sistemas e infraestrutura confiáveis": 0.3,
+        "Proteger sistemas e investigar incidentes": 0.1,
+        "Coordenar pessoas e decisões de produto": 0.2
+      },
       "question_weights": {"logical_reasoning": 1.0, "data_analysis": 0.35, "infrastructure": 0.35, "automation": 0.3, "quality_testing": 0.35},
       "junior_skills": [
         {"id": "programming_fundamentals", "name": "Lógica e fundamentos de programação", "priority": 1},
@@ -140,6 +155,16 @@
       ],
       "roadmap": {
         "technologies": ["Python ou Java", "Git e GitHub", "HTTP e APIs REST", "PostgreSQL", "pytest ou JUnit"],
+        "technology_by_skill": {
+          "programming_fundamentals": ["Python ou Java"],
+          "backend_language": ["Python ou Java"],
+          "http_apis": ["HTTP e APIs REST"],
+          "relational_database": ["PostgreSQL"],
+          "git_testing": ["Git e GitHub", "pytest ou JUnit"]
+        },
+        "certification_by_skill": {
+          "relational_database": "Certificação introdutória de banco de dados, opcional"
+        },
         "certifications": ["Certificação introdutória de programação ou banco de dados, opcional"],
         "portfolio_projects": ["API REST para gerenciamento de tarefas com autenticação, testes e documentação"]
       }
@@ -147,6 +172,13 @@
     {
       "id": "frontend_ux",
       "name": "Desenvolvimento Front-end & UI/UX",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 1.0,
+        "Analisar dados e gerar descobertas": 0.1,
+        "Manter sistemas e infraestrutura confiáveis": 0.1,
+        "Proteger sistemas e investigar incidentes": 0.1,
+        "Coordenar pessoas e decisões de produto": 0.55
+      },
       "question_weights": {"logical_reasoning": 0.55, "visual_design": 1.0, "user_experience": 0.95, "mobile_development": 0.35, "quality_testing": 0.3, "communication": 0.3},
       "junior_skills": [
         {"id": "html_css", "name": "HTML semântico e CSS responsivo", "priority": 1},
@@ -157,6 +189,16 @@
       ],
       "roadmap": {
         "technologies": ["HTML", "CSS responsivo", "JavaScript", "React", "Git e GitHub"],
+        "technology_by_skill": {
+          "html_css": ["HTML", "CSS responsivo"],
+          "javascript": ["JavaScript"],
+          "frontend_framework": ["React"],
+          "accessibility": ["CSS responsivo"],
+          "frontend_git_testing": ["Git e GitHub"]
+        },
+        "certification_by_skill": {
+          "frontend_framework": "Certificação introdutória de desenvolvimento web, opcional"
+        },
         "certifications": ["Certificação introdutória de desenvolvimento web, opcional"],
         "portfolio_projects": ["Interface responsiva acessível para um serviço real, com protótipo, estados de interação e testes"]
       }
@@ -164,6 +206,13 @@
     {
       "id": "data_science",
       "name": "Ciência de Dados e Machine Learning",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 0.25,
+        "Analisar dados e gerar descobertas": 1.0,
+        "Manter sistemas e infraestrutura confiáveis": 0.25,
+        "Proteger sistemas e investigar incidentes": 0.1,
+        "Coordenar pessoas e decisões de produto": 0.3
+      },
       "question_weights": {"logical_reasoning": 0.75, "mathematics": 1.0, "data_analysis": 1.0, "artificial_intelligence": 0.95, "quality_testing": 0.25},
       "junior_skills": [
         {"id": "python_data", "name": "Python para análise de dados", "priority": 1},
@@ -173,7 +222,17 @@
         {"id": "ml_fundamentals", "name": "Fundamentos de aprendizado de máquina", "priority": 5}
       ],
       "roadmap": {
-        "technologies": ["Python", "pandas", "SQL", "visualização de dados", "scikit-learn"],
+        "technologies": ["Python", "pandas", "Estatística descritiva e probabilidade", "SQL", "visualização de dados", "scikit-learn"],
+        "technology_by_skill": {
+          "python_data": ["Python", "pandas"],
+          "statistics": ["Estatística descritiva e probabilidade"],
+          "sql_data": ["SQL"],
+          "data_visualization": ["visualização de dados"],
+          "ml_fundamentals": ["scikit-learn"]
+        },
+        "certification_by_skill": {
+          "statistics": "Certificação introdutória de análise de dados, opcional"
+        },
         "certifications": ["Certificação introdutória de análise de dados, opcional"],
         "portfolio_projects": ["Análise exploratória reproduzível com dados públicos, conclusões, visualizações e um modelo baseline"]
       }
@@ -181,6 +240,13 @@
     {
       "id": "data_engineering",
       "name": "Engenharia de Dados",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 0.4,
+        "Analisar dados e gerar descobertas": 0.85,
+        "Manter sistemas e infraestrutura confiáveis": 0.7,
+        "Proteger sistemas e investigar incidentes": 0.15,
+        "Coordenar pessoas e decisões de produto": 0.25
+      },
       "question_weights": {"logical_reasoning": 0.75, "data_analysis": 0.75, "infrastructure": 0.75, "automation": 0.85, "cloud": 0.45, "quality_testing": 0.4},
       "junior_skills": [
         {"id": "python_data_eng", "name": "Python para manipulação de dados", "priority": 1},
@@ -191,6 +257,16 @@
       ],
       "roadmap": {
         "technologies": ["Python", "SQL", "PostgreSQL", "Apache Airflow", "Docker"],
+        "technology_by_skill": {
+          "python_data_eng": ["Python"],
+          "sql_data_eng": ["SQL", "PostgreSQL"],
+          "etl": ["Apache Airflow"],
+          "data_quality": ["SQL"],
+          "containers_data": ["Docker"]
+        },
+        "certification_by_skill": {
+          "etl": "Certificação introdutória de dados ou nuvem, opcional"
+        },
         "certifications": ["Certificação introdutória de dados ou nuvem, opcional"],
         "portfolio_projects": ["Pipeline ETL com dados públicos, validações, agendamento e instruções para execução local"]
       }
@@ -198,6 +274,13 @@
     {
       "id": "cybersecurity",
       "name": "Cibersegurança",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 0.1,
+        "Analisar dados e gerar descobertas": 0.25,
+        "Manter sistemas e infraestrutura confiáveis": 0.65,
+        "Proteger sistemas e investigar incidentes": 1.0,
+        "Coordenar pessoas e decisões de produto": 0.15
+      },
       "question_weights": {"logical_reasoning": 0.7, "infrastructure": 0.45, "security": 1.0, "networking": 0.9, "quality_testing": 0.35, "incident_response": 0.75},
       "junior_skills": [
         {"id": "linux_security", "name": "Linux e linha de comando", "priority": 1},
@@ -208,6 +291,16 @@
       ],
       "roadmap": {
         "technologies": ["Linux", "TCP/IP e DNS", "OWASP Top 10", "Wireshark em laboratório autorizado", "fundamentos de SIEM"],
+        "technology_by_skill": {
+          "linux_security": ["Linux"],
+          "network_security": ["TCP/IP e DNS", "Wireshark em laboratório autorizado"],
+          "security_fundamentals": ["OWASP Top 10"],
+          "web_security": ["OWASP Top 10"],
+          "incident_basics": ["fundamentos de SIEM"]
+        },
+        "certification_by_skill": {
+          "security_fundamentals": "ISC2 Certified in Cybersecurity (CC) ou CompTIA Security+, conforme disponibilidade"
+        },
         "certifications": ["ISC2 Certified in Cybersecurity (CC) ou CompTIA Security+, conforme disponibilidade"],
         "portfolio_projects": ["Laboratório local documentado de análise defensiva, com escopo autorizado e relatório de achados"]
       }
@@ -215,6 +308,13 @@
     {
       "id": "devops_sre",
       "name": "DevOps & SRE",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 0.15,
+        "Analisar dados e gerar descobertas": 0.2,
+        "Manter sistemas e infraestrutura confiáveis": 1.0,
+        "Proteger sistemas e investigar incidentes": 0.6,
+        "Coordenar pessoas e decisões de produto": 0.1
+      },
       "question_weights": {"logical_reasoning": 0.65, "infrastructure": 1.0, "automation": 0.95, "networking": 0.65, "cloud": 0.8, "quality_testing": 0.45, "incident_response": 0.9},
       "junior_skills": [
         {"id": "linux_ops", "name": "Linux e administração básica de sistemas", "priority": 1},
@@ -225,6 +325,16 @@
       ],
       "roadmap": {
         "technologies": ["Linux", "Bash ou Python", "GitHub Actions", "Docker", "Prometheus e Grafana"],
+        "technology_by_skill": {
+          "linux_ops": ["Linux"],
+          "scripting_ops": ["Bash ou Python"],
+          "git_ci": ["GitHub Actions"],
+          "containers": ["Docker"],
+          "monitoring": ["Prometheus e Grafana"]
+        },
+        "certification_by_skill": {
+          "linux_ops": "Certificação introdutória de Linux, opcional"
+        },
         "certifications": ["Certificação introdutória de Linux ou nuvem, opcional"],
         "portfolio_projects": ["Aplicação conteinerizada com pipeline CI, health checks, métricas e documentação de operação"]
       }
@@ -232,6 +342,13 @@
     {
       "id": "cloud_architecture",
       "name": "Cloud Architecture",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 0.2,
+        "Analisar dados e gerar descobertas": 0.2,
+        "Manter sistemas e infraestrutura confiáveis": 0.9,
+        "Proteger sistemas e investigar incidentes": 0.55,
+        "Coordenar pessoas e decisões de produto": 0.15
+      },
       "question_weights": {"logical_reasoning": 0.55, "infrastructure": 0.95, "automation": 0.65, "networking": 0.7, "cloud": 1.0, "incident_response": 0.4},
       "junior_skills": [
         {"id": "cloud_fundamentals", "name": "Conceitos de computação em nuvem", "priority": 1},
@@ -242,6 +359,16 @@
       ],
       "roadmap": {
         "technologies": ["Fundamentos AWS, Azure ou Google Cloud", "redes e IAM", "Linux", "Terraform", "monitoramento e custos"],
+        "technology_by_skill": {
+          "cloud_fundamentals": ["Fundamentos AWS, Azure ou Google Cloud"],
+          "cloud_networking": ["redes e IAM"],
+          "cloud_linux": ["Linux"],
+          "cloud_automation": ["Terraform"],
+          "cloud_monitoring": ["monitoramento e custos"]
+        },
+        "certification_by_skill": {
+          "cloud_fundamentals": "AWS Certified Cloud Practitioner, Microsoft AZ-900 ou Google Cloud Digital Leader"
+        },
         "certifications": ["AWS Certified Cloud Practitioner, Microsoft AZ-900 ou Google Cloud Digital Leader"],
         "portfolio_projects": ["Arquitetura simples de aplicação em nuvem documentada, com diagrama, segurança básica e estimativa de custos"]
       }
@@ -249,6 +376,13 @@
     {
       "id": "mobile",
       "name": "Desenvolvimento Mobile",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 1.0,
+        "Analisar dados e gerar descobertas": 0.1,
+        "Manter sistemas e infraestrutura confiáveis": 0.1,
+        "Proteger sistemas e investigar incidentes": 0.1,
+        "Coordenar pessoas e decisões de produto": 0.4
+      },
       "question_weights": {"logical_reasoning": 0.6, "visual_design": 0.65, "user_experience": 0.75, "mobile_development": 1.0, "quality_testing": 0.35},
       "junior_skills": [
         {"id": "mobile_programming", "name": "Fundamentos de programação para mobile", "priority": 1},
@@ -259,6 +393,16 @@
       ],
       "roadmap": {
         "technologies": ["Kotlin ou Flutter", "layouts responsivos", "consumo de APIs", "persistência local", "testes mobile"],
+        "technology_by_skill": {
+          "mobile_programming": ["Kotlin ou Flutter"],
+          "mobile_ui": ["layouts responsivos"],
+          "mobile_navigation": ["Kotlin ou Flutter"],
+          "mobile_api": ["consumo de APIs", "persistência local"],
+          "mobile_testing": ["testes mobile"]
+        },
+        "certification_by_skill": {
+          "mobile_programming": "Certificação introdutória da plataforma escolhida, opcional"
+        },
         "certifications": ["Certificação introdutória da plataforma escolhida, opcional"],
         "portfolio_projects": ["Aplicativo de acompanhamento de hábitos com navegação, persistência local, acessibilidade e testes"]
       }
@@ -266,6 +410,13 @@
     {
       "id": "qa",
       "name": "Engenharia de Qualidade e Testes",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 0.7,
+        "Analisar dados e gerar descobertas": 0.2,
+        "Manter sistemas e infraestrutura confiáveis": 0.4,
+        "Proteger sistemas e investigar incidentes": 0.4,
+        "Coordenar pessoas e decisões de produto": 0.3
+      },
       "question_weights": {"logical_reasoning": 0.75, "quality_testing": 1.0, "detail_orientation": 0.95, "automation": 0.8, "communication": 0.35},
       "junior_skills": [
         {"id": "test_fundamentals", "name": "Fundamentos de teste e casos de teste", "priority": 1},
@@ -276,6 +427,16 @@
       ],
       "roadmap": {
         "technologies": ["Técnicas de teste", "Postman", "pytest ou Playwright", "Git", "GitHub Actions"],
+        "technology_by_skill": {
+          "test_fundamentals": ["Técnicas de teste"],
+          "bug_reporting": ["Técnicas de teste"],
+          "api_testing": ["Postman"],
+          "test_automation": ["pytest ou Playwright"],
+          "qa_git_ci": ["Git", "GitHub Actions"]
+        },
+        "certification_by_skill": {
+          "test_fundamentals": "ISTQB Certified Tester Foundation Level (CTFL), opcional"
+        },
         "certifications": ["ISTQB Certified Tester Foundation Level (CTFL), opcional"],
         "portfolio_projects": ["Plano de testes e automação para uma aplicação de demonstração, com casos, evidências e relatório de defeitos"]
       }
@@ -283,6 +444,13 @@
     {
       "id": "product_management",
       "name": "Gestão de Produtos",
+      "work_preference_scores": {
+        "Construir produtos e funcionalidades": 0.7,
+        "Analisar dados e gerar descobertas": 0.55,
+        "Manter sistemas e infraestrutura confiáveis": 0.3,
+        "Proteger sistemas e investigar incidentes": 0.2,
+        "Coordenar pessoas e decisões de produto": 1.0
+      },
       "question_weights": {"user_experience": 0.65, "business_strategy": 1.0, "communication": 0.9, "collaboration": 0.9, "customer_outcomes": 1.0, "prioritization": 0.95},
       "junior_skills": [
         {"id": "product_discovery", "name": "Descoberta de problemas e necessidades de usuários", "priority": 1},
@@ -293,6 +461,16 @@
       ],
       "roadmap": {
         "technologies": ["Discovery", "entrevistas com usuários", "métricas de produto", "story mapping", "Scrum e Kanban"],
+        "technology_by_skill": {
+          "product_discovery": ["Discovery", "entrevistas com usuários"],
+          "product_metrics": ["métricas de produto"],
+          "product_prioritization": ["story mapping"],
+          "product_communication": ["entrevistas com usuários"],
+          "agile_delivery": ["Scrum e Kanban"]
+        },
+        "certification_by_skill": {
+          "product_prioritization": "Professional Scrum Product Owner I (PSPO I), opcional"
+        },
         "certifications": ["Professional Scrum Product Owner I (PSPO I), opcional"],
         "portfolio_projects": ["Estudo de caso de produto com problema, evidências de usuários, priorização, métricas e plano de experimento"]
       }
