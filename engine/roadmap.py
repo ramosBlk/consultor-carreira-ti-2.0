@@ -26,6 +26,7 @@ class PlanoEstudos:
     tecnologias: tuple[str, ...]
     certificacoes: tuple[str, ...]
     projetos_portfolio: tuple[str, ...]
+    ritmo_sugerido: str | None
 
 
 def analisar_lacunas(
@@ -96,6 +97,8 @@ def gerar_roadmap(
     identificador_trilha: str,
     conhecimentos: Mapping[str, int],
     base_conhecimento: Mapping[str, Any] | None = None,
+    career_timeline: str | None = None,
+    weekly_study_hours: int | None = None,
 ) -> PlanoEstudos:
     """Monta o plano da trilha usando lacunas e recomendações do JSON."""
     base = (
@@ -106,14 +109,85 @@ def gerar_roadmap(
     trilha = _obter_trilha(identificador_trilha, base)
     lacunas = analisar_lacunas(identificador_trilha, conhecimentos, base)
     recomendacoes = trilha["roadmap"]
+    tecnologia_por_habilidade = recomendacoes.get("technology_by_skill", {})
+    tecnologias_priorizadas = []
+    for lacuna in lacunas:
+        for tecnologia in tecnologia_por_habilidade.get(
+            lacuna.identificador_habilidade, []
+        ):
+            if tecnologia not in tecnologias_priorizadas:
+                tecnologias_priorizadas.append(tecnologia)
+    tecnologias_priorizadas.extend(
+        tecnologia
+        for tecnologia in recomendacoes["technologies"]
+        if tecnologia not in tecnologias_priorizadas
+    )
+    certificacoes_personalizadas = []
+    certificacoes_por_habilidade = recomendacoes.get(
+        "certification_by_skill", {}
+    )
+    for lacuna in lacunas:
+        certificacao = certificacoes_por_habilidade.get(
+            lacuna.identificador_habilidade
+        )
+        if certificacao and certificacao not in certificacoes_personalizadas:
+            certificacoes_personalizadas.append(certificacao)
+    if not certificacoes_personalizadas:
+        certificacoes_personalizadas = recomendacoes["certifications"]
+
+    projetos_portfolio = list(recomendacoes["portfolio_projects"])
+    modelo_projeto = base.get("portfolio_gap_template")
+    if lacunas and modelo_projeto:
+        habilidades_prioritarias = ", ".join(
+            lacuna.nome_habilidade for lacuna in lacunas
+        )
+        projetos_portfolio.append(
+            modelo_projeto.format(skills=habilidades_prioritarias)
+        )
+
+    ritmo_sugerido = None
+    if career_timeline is not None:
+        orientacao_prazo = base.get("timeline_guidance", {}).get(career_timeline)
+        if orientacao_prazo is None:
+            raise ValueError(f"Prazo de carreira desconhecido: {career_timeline}")
+        ritmo_sugerido = orientacao_prazo
+    if weekly_study_hours is not None:
+        if isinstance(weekly_study_hours, bool) or not isinstance(
+            weekly_study_hours, int
+        ):
+            raise TypeError("As horas semanais de estudo devem ser um inteiro.")
+        hours_field = next(
+            (
+                field
+                for step in base.get("wizard_steps", [])
+                for field in step.get("fields", [])
+                if field.get("id") == "weekly_study_hours"
+            ),
+            None,
+        )
+        if hours_field is None:
+            raise ValueError("A base não define os limites de horas semanais.")
+        minimum = hours_field["minimum"]
+        maximum = hours_field["maximum"]
+        if not minimum <= weekly_study_hours <= maximum:
+            raise ValueError(
+                f"As horas semanais de estudo devem estar entre {minimum} e {maximum}."
+            )
+        dedicacao = f"Dedicação informada: {weekly_study_hours} h por semana."
+        ritmo_sugerido = (
+            f"{ritmo_sugerido} {dedicacao}"
+            if ritmo_sugerido
+            else dedicacao
+        )
 
     return PlanoEstudos(
         identificador_trilha=trilha["id"],
         nome_trilha=trilha["name"],
         lacunas=tuple(lacunas),
-        tecnologias=tuple(recomendacoes["technologies"]),
-        certificacoes=tuple(recomendacoes["certifications"]),
-        projetos_portfolio=tuple(recomendacoes["portfolio_projects"]),
+        tecnologias=tuple(tecnologias_priorizadas),
+        certificacoes=tuple(certificacoes_personalizadas),
+        projetos_portfolio=tuple(projetos_portfolio),
+        ritmo_sugerido=ritmo_sugerido,
     )
 
 
