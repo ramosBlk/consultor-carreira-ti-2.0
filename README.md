@@ -1,415 +1,92 @@
-# 🧠 Consultor Inteligente de Carreiras em TI
+# Consultor de Carreiras em TI
 
-Sistema de orientação de carreira desenvolvido em Python para auxiliar estudantes e profissionais de Tecnologia da Informação a identificar trilhas compatíveis com seu perfil.
+Aplicação web que ajuda estudantes e pessoas em transição de carreira a explorar caminhos profissionais em tecnologia. Em vez de escolher uma única profissão com base em respostas de “sim ou não”, o sistema considera afinidades, objetivos e conhecimentos que a própria pessoa avalia.
 
-O sistema coleta afinidades em escala Likert, preferência profissional, disponibilidade e conhecimentos atuais. Um motor de pontuação ponderada recomenda as três trilhas mais compatíveis e monta um plano de estudos com lacunas priorizadas para o nível júnior.
-
----
+> É uma ferramenta de orientação e autoconhecimento. As compatibilidades são estimativas para ajudar na reflexão, não uma avaliação profissional nem uma garantia de emprego.
 
-# 🖥️ Tela de Resultado Esperado 
+## Como funciona
 
-![Tela do projeto](assets/1.png)
+O diagnóstico é feito em três etapas:
 
-![Tela do projeto](assets/2.png)
+1. **Perfil pessoal:** informe sua experiência em TI e quantas horas por semana pode estudar.
+2. **Afinidades técnicas:** avalie de 1 a 5 seu interesse por temas como dados, design, infraestrutura, segurança e comunicação.
+3. **Objetivos de carreira:** indique o tipo de trabalho que procura, seu prazo e seu nível atual nas habilidades da trilha escolhida.
 
-![Tela do projeto](assets/3.png)
+Ao concluir, você verá:
 
+- As três trilhas mais compatíveis, com percentuais e fatores considerados;
+- Uma comparação das habilidades avaliadas com o nível definido como Júnior;
+- Tecnologias priorizadas conforme as lacunas identificadas;
+- Sugestões de certificação e projeto de portfólio;
+- Uma orientação de ritmo baseada no prazo e nas horas de estudo informados.
 
----
-# 🎯 Objetivo
+As imagens abaixo mostram o preenchimento do perfil, a avaliação de afinidades e um exemplo de resultado:
 
-Desenvolver um Sistema Especialista capaz de identificar a trilha de carreira em TI mais compatível com o perfil do usuário utilizando:
+![Etapa de perfil pessoal](assets/1.png)
 
-- Base de conhecimento externa em JSON;
-- Pontuação ponderada e penalidades configuráveis;
-- Análise de lacunas por competência;
-- Interface Web interativa.
+![Etapa de avaliação de afinidades](assets/2.png)
 
-O sistema busca simular o processo de orientação profissional realizado por um especialista humano.
+![Exemplo de ranking e plano de estudos](assets/3.png)
 
----
+## Trilhas avaliadas
 
-# 🚀 Tecnologias Utilizadas
+O sistema compara o perfil com dez áreas:
 
-- **Python**  
-  Linguagem principal utilizada no desenvolvimento do sistema.
+| Trilha | Exemplos de interesses relacionados |
+|---|---|
+| Back-end | Lógica, APIs e serviços |
+| Front-end e UX | Interfaces, design e experiência de uso |
+| Ciência de Dados | Matemática, análise e aprendizado de máquina |
+| Engenharia de Dados | Pipelines, bancos de dados e automação |
+| Cibersegurança | Segurança, redes e resposta a incidentes |
+| DevOps e SRE | Infraestrutura, automação e confiabilidade |
+| Cloud Architecture | Nuvem, redes e arquitetura de sistemas |
+| Mobile | Aplicativos e interfaces para dispositivos móveis |
+| QA | Testes, qualidade e atenção aos detalhes |
+| Product Management | Usuários, comunicação e priorização |
 
-- **Streamlit**  
-  Framework utilizado para construção da interface web.
+## Como a recomendação é calculada
 
-- **Experta**
-  Mantida para os testes do motor de regras legado; o fluxo atual da interface usa a pontuação ponderada baseada em `regras_carreiras.json`.
+As afinidades são combinadas com pesos específicos de cada trilha. A preferência de trabalho também pode influenciar o ranking; quando a pessoa escolhe “Ainda estou explorando”, o ranking considera as afinidades sem esse ajuste. Algumas respostas podem aplicar penalidades configuradas para determinadas trilhas.
 
-- **Git/GitHub**  
-  Controle de versão e armazenamento do projeto.
+O percentual expressa compatibilidade relativa com as respostas fornecidas: não é uma probabilidade de contratação. O resultado serve como ponto de partida para comparar possibilidades.
 
----
+Para montar o plano, o sistema compara as habilidades informadas com o nível Júnior definido na base de conhecimento. Habilidades não avaliadas são tratadas como iniciais. As tecnologias ligadas às lacunas são priorizadas, e o prazo escolhido e a disponibilidade semanal ajudam a contextualizar o ritmo sugerido.
 
-# 📂 Estrutura do Projeto
+## Executar localmente
 
-```
-consultor-carreiras-ti/
-│
-├── app.py                     # Interface Web utilizando Streamlit
-├── requirements.txt            # Dependências do projeto
-├── regras_carreiras.json       # Perguntas, pesos, trilhas, gaps e recomendações
-├── decision_matrix.md          # Matriz histórica das regras legadas
-├── knowledge_base.md           # Documentação da base de conhecimento
-├── README.md                   # Documentação do projeto
-│
-├── engine/                     # Núcleo do sistema especialista
-│   │
-│   ├── __init__.py             # Compatibilidade das dependências do motor
-│   ├── engine.py               # Carregamento JSON e ranking ponderado
-│   ├── roadmap.py              # Análise de gaps e plano de estudos
-│   ├── facts.py                # Definição dos fatos do usuário
-│   ├── inference.py            # Motor de inferência legado utilizando Experta
-│   ├── questions.py            # Perguntas da entrevista
-│   └── rules.py                # Regras especialistas legadas
-│
-├── models/
-│   └── careers.py              # Definição das trilhas de carreira
-│
-└── tests/
-    ├── test_weighted_engine.py # Testes do ranking ponderado
-    ├── test_roteiro.py         # Testes de lacunas e roadmap
-    ├── test_casos_limite.py    # Testes de perfis ambíguos e limites
-    └── test_rules.py           # Testes do motor legado
-```
+É necessário ter Python instalado.
 
----
-
-# 🧠 Funcionamento do Sistema
-
-O fluxo atual utiliza uma base de conhecimento desacoplada e um motor de pontuação ponderada.
-
-O fluxo de funcionamento ocorre da seguinte forma:
-
-```
-Usuário
-   |
-   ↓
-Wizard de três etapas
-   |
-   ↓
-Afinidades de 1 a 5 + objetivos
-   |
-   ↓
-Ranking ponderado das dez trilhas
-   |
-   ↓
-Top 3 + trilha escolhida
-   |
-   ↓
-Lacunas para nível júnior + roadmap
-```
-
-Os pesos das perguntas, penalidades, habilidades júnior, tecnologias, certificações e projetos ficam em `regras_carreiras.json`, não no código do motor. A preferência de trabalho participa do ranking com o peso configurado em `objective_fit_weight`; a opção exploratória não altera o resultado baseado em afinidades.
-
-Para o roadmap, as tecnologias associadas às habilidades com gaps são priorizadas. O prazo profissional e as horas semanais informadas também geram uma orientação de ritmo; certificações e projetos são sugeridos conforme a trilha selecionada.
-
----
-
-# 🎯 Trilhas de Carreira Disponíveis
-
-O sistema pode recomendar uma das 10 trilhas:
-
-## 1. Desenvolvimento Back-end
-
-Foco em:
-
-- Construção de APIs;
-- Regras de negócio;
-- Desenvolvimento de servidores;
-- Banco de dados.
-
----
-
-## 2. Desenvolvimento Front-end & UI/UX
-
-Foco em:
-
-- Interfaces web;
-- Experiência do usuário;
-- Design de aplicações;
-- Frameworks modernos.
-
----
-
-## 3. Ciência de Dados e Machine Learning
-
-Foco em:
-
-- Inteligência Artificial;
-- Estatística;
-- Modelos preditivos;
-- Análise de dados.
-
----
-
-## 4. Engenharia de Dados
-
-Foco em:
-
-- Arquitetura de dados;
-- Pipelines ETL/ELT;
-- Processamento de grandes volumes de dados;
-- Data Lakes.
-
----
-
-## 5. Cibersegurança
-
-Foco em:
-
-- Segurança digital;
-- Redes;
-- Vulnerabilidades;
-- Proteção de sistemas.
-
----
-
-## 6. DevOps & SRE
-
-Foco em:
-
-- Automação;
-- Integração contínua (CI/CD);
-- Contêineres;
-- Infraestrutura.
-
----
-
-## 7. Computação em Nuvem
-
-Foco em:
-
-- Arquitetura Cloud;
-- AWS, Azure e GCP;
-- Escalabilidade;
-- Gestão de infraestrutura.
-
----
-
-## 8. Desenvolvimento Mobile
-
-Foco em:
-
-- Aplicativos móveis;
-- Desenvolvimento Android/iOS;
-- Flutter;
-- React Native.
-
----
-
-## 9. Engenharia de Qualidade e Testes (QA)
-
-Foco em:
-
-- Testes automatizados;
-- Qualidade de software;
-- Confiabilidade;
-- Processos de validação.
-
----
-
-## 10. Gestão de Produtos
-
-Foco em:
-
-- Estratégia de produto;
-- Metodologias ágeis;
-- Comunicação entre negócio e desenvolvimento;
-- Priorização de funcionalidades.
-
----
-
-# ⚙️ Instalação
-
-## 1. Clonar o repositório
-
-```bash
-git clone https://github.com/ramosBlk/consultor-carreiras-ti.git
-```
-
-Acesse a pasta:
-
-```bash
-cd consultor-carreiras-ti
-```
-
----
-
-## 2. Criar ambiente virtual
-
-```bash
-python -m venv .venv
-```
-
-Ativar ambiente virtual:
-
-Windows PowerShell:
+No PowerShell:
 
 ```powershell
+py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-```
-
----
-
-## 3. Instalar dependências
-
-```bash
 pip install -r requirements.txt
-```
-
----
-
-# ▶️ Executando o Sistema
-
-Com o ambiente virtual ativado:
-
-```bash
 streamlit run app.py
 ```
 
-O sistema será aberto automaticamente no navegador:
-
-```
-http://localhost:8501
-```
-
----
-
-# 📋 Motor de Inferência
-
-O sistema utiliza regras do tipo:
-
-```
-SE condição
-ENTÃO recomendação
-```
-
-Exemplo:
-
-```
-SE usuário possui afinidade com Python
-E gosta de criar APIs
-
-ENTÃO recomendar Desenvolvimento Back-end
-```
-
-Cada regra possui uma justificativa associada, permitindo transparência na decisão.
-
----
-
-# 🧪 Validação com Personas
-
-Para executar os testes automatizados com as dependências instaladas:
+No macOS ou Linux:
 
 ```bash
-python -m unittest discover -s tests
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+streamlit run app.py
 ```
 
-Os testes cobrem perfis representativos das dez trilhas, um perfil sem
-recomendação e a consistência das opções da entrevista.
+O Streamlit abrirá a aplicação no navegador, normalmente em `http://localhost:8501`.
 
----
+## Testes
 
-O sistema será validado utilizando diferentes perfis de usuários.
+Com o ambiente virtual ativado, execute:
 
-## Persona 1 - Perfil Analítico
-
-Características:
-
-- Alta afinidade matemática;
-- Interesse em dados;
-- Interesse em inteligência artificial.
-
-Resultado esperado:
-
-```
-Ciência de Dados e Machine Learning
+```bash
+python -m unittest discover -s tests -v
 ```
 
----
+Os testes cobrem o ranking ponderado, perfis ambíguos, casos-limite e a geração de lacunas e recomendações.
 
-## Persona 2 - Perfil Desenvolvimento
+## Base de conhecimento
 
-Características:
-
-- Interesse em programação;
-- Gosta de lógica;
-- Interesse em APIs.
-
-Resultado esperado:
-
-```
-Desenvolvimento Back-end
-```
-
----
-
-## Persona 3 - Perfil Infraestrutura
-
-Características:
-
-- Interesse em servidores;
-- Redes;
-- Cloud;
-- Automação.
-
-Resultado esperado:
-
-```
-DevOps & SRE
-ou
-Computação em Nuvem
-```
-
----
-
-## Persona 4 - Perfil Negócios
-
-Características:
-
-- Interesse em produto;
-- Comunicação;
-- Estratégia.
-
-Resultado esperado:
-
-```
-Gestão de Produtos
-```
-
----
-
-# 📚 Engenharia de Conhecimento
-
-O projeto possui documentos auxiliares:
-
-## decision_matrix.md
-
-Contém a matriz de decisão utilizada para estruturar como as respostas do usuário ativam as regras do sistema.
-
-## knowledge_base.md
-
-Contém a organização do conhecimento especialista utilizado pelo motor de inferência.
-
----
-
-# 👨‍💻 Autor
-
-**Pedro Henrique Ramos de Carvalho**
-
-Projeto acadêmico desenvolvido para a disciplina de Inteligência Artificial.
-
-**Centro Universitário Presidente Antônio Carlos - UNIPAC Barbacena**
-
-# 🤖 Uso de Inteligência Artificial como Apoio no Desenvolvimento
-
-Durante o desenvolvimento deste projeto, foi utilizada a ferramenta **ChatGPT** como recurso de apoio para auxiliar na organização das ideias, estruturação do projeto.
-
-A utilização da inteligência artificial teve como objetivo auxiliar o processo de aprendizagem e desenvolvimento, enquanto todas as decisões de implementação, organização do código, criação das regras do sistema especialista e validação do funcionamento foram realizadas durante a construção do projeto.
-
-A ferramenta foi utilizada como um suporte semelhante a uma consulta técnica, contribuindo para a evolução do projeto e para o entendimento das tecnologias utilizadas.
+As perguntas, os pesos, as penalidades, as habilidades de nível Júnior e as recomendações ficam em [`regras_carreiras.json`](./regras_carreiras.json). Assim, é possível ajustar o conteúdo das trilhas sem misturar essas definições ao código do motor. A lógica de pontuação fica em `engine/engine.py`, e a análise de lacunas e o plano de estudos em `engine/roadmap.py`.
