@@ -8,9 +8,11 @@ O sistema coleta afinidades em escala Likert, preferência profissional, disponi
 
 # 🖥️ Tela de Resultado Esperado 
 
-![Tela do projeto](assets/Tela.png)
+![Tela do projeto](assets/1.png)
 
-![Tela do projeto](assets/Tela2.png)
+![Tela do projeto](assets/2.png)
+
+![Tela do projeto](assets/3.png)
 
 
 ---
