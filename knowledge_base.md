@@ -6,6 +6,18 @@ Definir quais características do usuário estão relacionadas a cada uma das de
 
 ---
 
+## Pontuação, lacunas e recomendações
+
+O fluxo atual carrega a configuração de `regras_carreiras.json`. Os pesos de afinidade são normalizados em uma pontuação de compatibilidade; quando a pessoa informa uma preferência de trabalho, ela é combinada com as afinidades conforme `objective_fit_weight`. A opção "Ainda estou explorando" é neutra.
+
+Cada trilha define habilidades esperadas para o nível júnior e associa lacunas a tecnologias em `roadmap.technology_by_skill`. As tecnologias relacionadas às lacunas são exibidas primeiro. `roadmap.certification_by_skill` permite priorizar certificações ligadas às competências que ainda precisam ser desenvolvidas; se nenhuma lacuna tiver uma certificação específica, são usadas as sugestões gerais da trilha.
+
+O projeto principal do portfólio permanece ligado à trilha, e `portfolio_gap_template` acrescenta as habilidades ainda não atingidas ao foco do projeto. `timeline_guidance` e as horas semanais informadas orientam o ritmo sugerido do plano.
+
+Para ajustar a base sem alterar o motor, atualize os pesos, as habilidades e esses mapas no JSON. O carregamento valida referências a perguntas, trilhas, habilidades, tecnologias, preferências e prazos.
+
+---
+
 ## Desenvolvimento Back-end
 
 Características principais:

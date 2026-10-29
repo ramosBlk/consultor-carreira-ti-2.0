@@ -70,16 +70,25 @@ def _obter_respostas_afinidades() -> dict[str, int]:
 
 def _mostrar_resultado() -> None:
     respostas = _obter_respostas_afinidades()
+    objetivo = st.session_state["objetivos_carreira"]
+    perfil = st.session_state["perfil_pessoal"]
     trilhas_recomendadas = classificar_trilhas(
         respostas,
         top_n=3,
         knowledge_base=base_conhecimento,
+        objectives={"work_preference": objetivo.get("work_preference")},
     )
     trilha_escolhida = st.session_state["trilha_escolhida"]
     competencias = st.session_state["competencias_por_trilha"].get(
         trilha_escolhida, {}
     )
-    roteiro = gerar_roadmap(trilha_escolhida, competencias, base_conhecimento)
+    roteiro = gerar_roadmap(
+        trilha_escolhida,
+        competencias,
+        base_conhecimento,
+        career_timeline=objetivo.get("career_timeline"),
+        weekly_study_hours=perfil.get("weekly_study_hours"),
+    )
 
     st.header("Seu mapa de compatibilidade")
     st.bar_chart(
@@ -105,6 +114,13 @@ def _mostrar_resultado() -> None:
             )
 
     with st.expander("Ver fatores considerados no ranking"):
+        if objetivo.get("work_preference") != "Ainda estou explorando":
+            st.caption(
+                f"Preferência de trabalho considerada: "
+                f"{objetivo['work_preference']} "
+                f"(peso de {base_conhecimento['objective_fit_weight'] * 100:.0f}% "
+                "na compatibilidade)."
+            )
         for trilha in trilhas_recomendadas:
             st.markdown(f"**{trilha.career_name}**")
             for pergunta in trilha.matched_questions:
@@ -114,13 +130,13 @@ def _mostrar_resultado() -> None:
 
     st.divider()
     st.subheader(f"Plano para {roteiro.nome_trilha}")
-    objetivo = st.session_state["objetivos_carreira"]
-    perfil = st.session_state["perfil_pessoal"]
     st.caption(
         f"{objetivo['work_preference']} · "
         f"{objetivo['career_timeline']} · "
         f"{perfil['weekly_study_hours']} h de estudo por semana"
     )
+    if roteiro.ritmo_sugerido:
+        st.info(roteiro.ritmo_sugerido)
 
     st.markdown("#### Lacunas prioritárias para o nível júnior")
     if roteiro.lacunas:
@@ -215,6 +231,11 @@ else:
             _obter_respostas_afinidades(),
             top_n=3,
             knowledge_base=base_conhecimento,
+            objectives={
+                "work_preference": st.session_state["objetivos_carreira"].get(
+                    "work_preference"
+                )
+            },
         )
         opcoes_trilhas = [trilha.career_id for trilha in trilhas_recomendadas]
         nomes_trilhas = {

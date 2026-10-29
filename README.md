@@ -1,8 +1,8 @@
 # 🧠 Consultor Inteligente de Carreiras em TI
 
-Sistema Especialista baseado em regras desenvolvido em Python, com o objetivo de auxiliar estudantes e profissionais da área de Tecnologia da Informação na escolha de uma trilha de carreira compatível com seu perfil.
+Sistema de orientação de carreira desenvolvido em Python para auxiliar estudantes e profissionais de Tecnologia da Informação a identificar trilhas compatíveis com seu perfil.
 
-O sistema realiza uma entrevista com o usuário através de perguntas sobre afinidades, preferências profissionais, conhecimentos prévios e objetivos de atuação. A partir das respostas coletadas, um motor de inferência baseado em regras analisa os fatos e recomenda a carreira mais adequada.
+O sistema coleta afinidades em escala Likert, preferência profissional, disponibilidade e conhecimentos atuais. Um motor de pontuação ponderada recomenda as três trilhas mais compatíveis e monta um plano de estudos com lacunas priorizadas para o nível júnior.
 
 ---
 
@@ -18,10 +18,9 @@ O sistema realiza uma entrevista com o usuário através de perguntas sobre afin
 
 Desenvolver um Sistema Especialista capaz de identificar a trilha de carreira em TI mais compatível com o perfil do usuário utilizando:
 
-- Engenharia de Conhecimento;
-- Base de fatos;
-- Regras de inferência;
-- Encadeamento para frente;
+- Base de conhecimento externa em JSON;
+- Pontuação ponderada e penalidades configuráveis;
+- Análise de lacunas por competência;
 - Interface Web interativa.
 
 O sistema busca simular o processo de orientação profissional realizado por um especialista humano.
@@ -33,11 +32,11 @@ O sistema busca simular o processo de orientação profissional realizado por um
 - **Python**  
   Linguagem principal utilizada no desenvolvimento do sistema.
 
-- **Experta**  
-  Biblioteca utilizada para criação do motor de inferência baseado em regras.
-
 - **Streamlit**  
   Framework utilizado para construção da interface web.
+
+- **Experta**
+  Mantida para os testes do motor de regras legado; o fluxo atual da interface usa a pontuação ponderada baseada em `regras_carreiras.json`.
 
 - **Git/GitHub**  
   Controle de versão e armazenamento do projeto.
@@ -51,30 +50,36 @@ consultor-carreiras-ti/
 │
 ├── app.py                     # Interface Web utilizando Streamlit
 ├── requirements.txt            # Dependências do projeto
-├── decision_matrix.md          # Matriz de decisão das regras
+├── regras_carreiras.json       # Perguntas, pesos, trilhas, gaps e recomendações
+├── decision_matrix.md          # Matriz histórica das regras legadas
 ├── knowledge_base.md           # Documentação da base de conhecimento
 ├── README.md                   # Documentação do projeto
 │
 ├── engine/                     # Núcleo do sistema especialista
 │   │
 │   ├── __init__.py             # Compatibilidade das dependências do motor
+│   ├── engine.py               # Carregamento JSON e ranking ponderado
+│   ├── roadmap.py              # Análise de gaps e plano de estudos
 │   ├── facts.py                # Definição dos fatos do usuário
-│   ├── inference.py            # Motor de inferência utilizando Experta
+│   ├── inference.py            # Motor de inferência legado utilizando Experta
 │   ├── questions.py            # Perguntas da entrevista
-│   └── rules.py                # Regras especialistas do sistema
+│   └── rules.py                # Regras especialistas legadas
 │
 ├── models/
 │   └── careers.py              # Definição das trilhas de carreira
 │
 └── tests/
-    └── test_rules.py           # Testes das recomendações e perguntas
+    ├── test_weighted_engine.py # Testes do ranking ponderado
+    ├── test_roteiro.py         # Testes de lacunas e roadmap
+    ├── test_casos_limite.py    # Testes de perfis ambíguos e limites
+    └── test_rules.py           # Testes do motor legado
 ```
 
 ---
 
 # 🧠 Funcionamento do Sistema
 
-O sistema funciona utilizando uma arquitetura de Sistema Especialista baseada em regras.
+O fluxo atual utiliza uma base de conhecimento desacoplada e um motor de pontuação ponderada.
 
 O fluxo de funcionamento ocorre da seguinte forma:
 
@@ -82,30 +87,24 @@ O fluxo de funcionamento ocorre da seguinte forma:
 Usuário
    |
    ↓
-Entrevista de Perfil
+Wizard de três etapas
    |
    ↓
-Criação dos Fatos
+Afinidades de 1 a 5 + objetivos
    |
    ↓
-Motor de Inferência (Experta)
+Ranking ponderado das dez trilhas
    |
    ↓
-Aplicação das Regras
+Top 3 + trilha escolhida
    |
    ↓
-Recomendação da Carreira
+Lacunas para nível júnior + roadmap
 ```
 
-Durante a entrevista, o sistema coleta informações como:
+Os pesos das perguntas, penalidades, habilidades júnior, tecnologias, certificações e projetos ficam em `regras_carreiras.json`, não no código do motor. A preferência de trabalho participa do ranking com o peso configurado em `objective_fit_weight`; a opção exploratória não altera o resultado baseado em afinidades.
 
-- Afinidade matemática e estatística;
-- Preferências de atividades;
-- Linguagens ou ferramentas conhecidas;
-- Interesse em áreas específicas;
-- Tipo de entrega de valor desejada.
-
-Após a coleta das respostas, essas informações são transformadas em fatos e analisadas pelo motor de inferência.
+Para o roadmap, as tecnologias associadas às habilidades com gaps são priorizadas. O prazo profissional e as horas semanais informadas também geram uma orientação de ritmo; certificações e projetos são sugeridos conforme a trilha selecionada.
 
 ---
 
